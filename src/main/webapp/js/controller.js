@@ -1,7 +1,7 @@
 import TaskList from './components/tasklist/main.js';
 
 
-const main = {
+const controller = {
 	run() {
 		customElements.define('task-list', TaskList);
 
@@ -10,6 +10,22 @@ const main = {
 		tasklist.addtaskCallback(
 			() => { console.log("Click event on 'New task button'") }
 		);
-	}
+
+
+		const task = {
+			"id": 5,
+			"title": "Do DAT152 home work",
+			"status": "ACTIVE"
+		};
+		
+		tasklist.showTask(task);
+	},
+
+
+	//	async addTask(task){
+
+	//	},
+
+
 }
-main.run(); 
+controller.run(); 
