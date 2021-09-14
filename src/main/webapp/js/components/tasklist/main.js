@@ -27,7 +27,7 @@ export default class extends HTMLElement {
 		this.message = this.shadow.getElementById('message');
 		this.taskList = this.shadow.getElementById('taskList');
 		
-		this.shadow.querySelector('button').addEventListener("click", this.runNewTask.bind(this));
+		//this.shadow.querySelector('button').addEventListener("click", this.runNewTask.bind(this));
 
 	}
 
@@ -61,8 +61,7 @@ export default class extends HTMLElement {
 	}
 
 	addtaskCallback(callback) {
-		this.newCallbackList.set(this.newCallbackId, callback);
-		this.newCallbackId++;
+		this.shadow.querySelector("button").addEventListener("click", callback);
 	}
 
 	changestatusCallback(callback) {
@@ -71,6 +70,7 @@ export default class extends HTMLElement {
 	}
 
 	deletetaskCallback(callback) {
+		this.shadow.querySelector()
 		this.deleteStatusCallbackList.set(this.deleteStatusCallbackId, callback);
 		this.deleteStatusCallbackId++;
 	}
@@ -144,10 +144,6 @@ export default class extends HTMLElement {
 
 	}
 	
-	runNewTask() {
-		this.newCallbackList.forEach(callback => {callback()}); 
-		
-	}
 
 }
 

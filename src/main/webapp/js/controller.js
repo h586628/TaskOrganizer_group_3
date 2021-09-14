@@ -12,10 +12,15 @@ const controller = {
 		this.tasklist = document.querySelector("task-list");
 		this.taskbox = document.querySelector("task-box");
 		
+		
 		this.tasklist.enableaddtask();
 
 
 		this.tasklist.addtaskCallback(this.taskbox.show.bind(this.taskbox));
+		//this.taskbox.newtaskCallback(this.newTask.bind(this));
+		//this.tasklist.changestatusCallback(this.changeStatus.bind(this));
+        //this.tasklist.deletetaskCallback(this.deleteTask.bind(this));
+        
 
 		this.taskbox.allstatuses = ["WAITING", "ACTIVE", "DONE"];
 		this.tasklist.allstatuses = ["WAITING", "ACTIVE", "DONE"];
@@ -44,7 +49,10 @@ const controller = {
 		this.tasklist.showTask(task2);
 		this.tasklist.showTask(task3);
 	},
-
+	
+	//newTask(){},
+	//changeStatus(){},
+	//deleteTask(){},
 
 
 }
