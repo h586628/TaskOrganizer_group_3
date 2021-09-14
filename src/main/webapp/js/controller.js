@@ -9,16 +9,17 @@ const controller = {
 		customElements.define('task-box', TaskBox);
 
 
-		const tasklist = document.querySelector("task-list");
-		tasklist.enableaddtask();
-		tasklist.addtaskCallback(
-			() => { console.log("Click event on 'New task button'") }
-		);
+		this.tasklist = document.querySelector("task-list");
+		this.taskbox = document.querySelector("task-box");
+		
+		this.tasklist.enableaddtask();
 
-		const taskbox = document.querySelector("task-box");
 
-		taskbox.allstatuses = ["WATING", "ACTIVE", "DONE"];
-		taskbox.show();
+		this.tasklist.addtaskCallback(this.taskbox.show.bind(this.taskbox));
+
+		this.taskbox.allstatuses = ["WAITING", "ACTIVE", "DONE"];
+		this.tasklist.allstatuses = ["WAITING", "ACTIVE", "DONE"];
+
 
 
 		const task = {
@@ -27,7 +28,21 @@ const controller = {
 			"status": "ACTIVE"
 		};
 
-		tasklist.showTask(task);
+		const task2 = {
+			"id": 1,
+			"title": "Grine",
+			"status": "WAITING"
+		};
+
+		const task3 = {
+			"id": 2,
+			"title": "Gå hjem og legge seg",
+			"status": "DONE"
+		};
+
+		this.tasklist.showTask(task);
+		this.tasklist.showTask(task2);
+		this.tasklist.showTask(task3);
 	},
 
 

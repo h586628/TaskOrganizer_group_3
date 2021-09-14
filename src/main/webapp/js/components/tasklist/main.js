@@ -21,10 +21,13 @@ export default class extends HTMLElement {
 	constructor() {
 		super();
 
-		this.shadow = this.attachShadow({ mode: 'closed'  });
+		/** @public {Array} */ this.allstatuses = null
+		this.shadow = this.attachShadow({ mode: 'closed' });
 		this.createContent();
 		this.message = this.shadow.getElementById('message');
 		this.taskList = this.shadow.getElementById('taskList');
+		
+		this.shadow.querySelector('button').addEventListener("click", this.runNewTask.bind(this));
 
 	}
 
@@ -88,16 +91,29 @@ export default class extends HTMLElement {
 			<td>${task.status}</td>
 			<td>
 				<select id="status">
-					<option value="modify">&ltModify&gt</option>
-					<option value="waiting">WAITING</option>
-					<option value="active">ACTIVE</option>
-					<option value="done">DONE</option>
+					<option value="0">&ltModify&gt</option>
 				</select>
 			</td>
 			<td>
 				<button>Remove</button>
 			</td>
 		`;
+		
+		const dropdownSelect = row.querySelector("select");
+		
+		this.allstatuses.forEach((status, i) => {
+		
+			const statusOption = document.createElement("option"); 
+			statusOption.value = i+1; 
+			statusOption.textContent = status; 
+			dropdownSelect.add(statusOption); 
+			
+			if(task.status == status) statusOption.disabled = true; 
+			else statusOption.disabled = false; 
+		});
+		
+		dropdownSelect.selectedIndex = 0; 
+		
 
 
 		this.taskList.querySelector('tbody').prepend(row);
@@ -123,23 +139,15 @@ export default class extends HTMLElement {
 
 	removeTask(task) {
 		const row = this.taskList.querySelector(`tr[taskId="${task.id}"]`);
-		row.remove(); 
+		row.remove();
 		if (this.taskList.querySelectorAll('table').length == 0) this.noTask();
-		
+
 	}
 	
-	/**
-	 * @param {Array<Object>} statuses
-	 */
-	set allstatuses(statuses) {
-		const statusDropdown = this.taskList.querySelector("select");
-		statuses.forEach((status, index) => {
-			const statusOption = document.createElement("option");
-			statusOption.value = index;
-			statusOption.textContent = status;
-			statusDropdown.add(statusOption);
+	runNewTask() {
+		this.newCallbackList.forEach(callback => {callback()}); 
 		
-		});
 	}
+
 }
 
