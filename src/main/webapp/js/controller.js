@@ -17,7 +17,7 @@ const controller = {
 
 
 		this.tasklist.addtaskCallback(this.taskbox.show.bind(this.taskbox));
-		//this.taskbox.newtaskCallback(this.newTask.bind(this));
+		this.taskbox.newtaskCallback(this.newTask.bind(this));
 		//this.tasklist.changestatusCallback(this.changeStatus.bind(this));
         //this.tasklist.deletetaskCallback(this.deleteTask.bind(this));
         
@@ -50,7 +50,9 @@ const controller = {
 		this.tasklist.showTask(task3);
 	},
 	
-	//newTask(){},
+	newTask(){
+		
+	},
 	//changeStatus(){},
 	//deleteTask(){},
 

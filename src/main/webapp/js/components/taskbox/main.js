@@ -15,7 +15,7 @@ export default class extends HTMLElement {
 		this.createLink();
 		this.taskbox = this.createModal();
 		this.taskbox.querySelector("span").addEventListener("click", this.close.bind(this));
-		//this.taskbox.querySelector("button").addEventListener("click", this..bind(this));
+		this.shadow.querySelector("button").addEventListener("click", this.newTask.bind(this));
 
 	}
 
@@ -102,8 +102,16 @@ export default class extends HTMLElement {
 		this.shadow.appendChild(link);
 	}
 
+	newTask() {
+		this.newtaskCallbackList.forEach(callback => {
+			callback(this.task)
+		});
 
-	
+
+	}
+
+
+
 
 
 }
