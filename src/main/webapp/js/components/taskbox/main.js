@@ -2,11 +2,10 @@ export default class extends HTMLElement {
 
 	shadow;
 	css = "js/components/taskbox/taskbox.css";
-	allstatuses;
 	taskbox;
 	newtaskCallbackList = new Map();
 	newTaskCallbackId = 0;
-	
+
 
 
 
@@ -54,23 +53,37 @@ export default class extends HTMLElement {
 
 	show() {
 
-		this.taskbox.classList.remove("hidden");		
+		this.taskbox.classList.remove("hidden");
 
 	}
 
-
-	newtaskCallback(callback) { 
+	/**
+	 * @param {Array<Object>} statuses
+	 */
+	set allstatuses(statuses) {
+		const statusDropdown = this.taskbox.querySelector("select");
+		statuses.forEach((status, index) => {
+			const statusOption = document.createElement("option");
+			statusOption.value = index;
+			statusOption.textContent = status;
+			statusDropdown.add(statusOption);
 		
+		});
+	}
+
+
+	newtaskCallback(callback) {
+
 		this.newtaskCallbackList.set(this.newTaskCallbackId, callback);
 		this.newTaskCallbackId++;
-	
+
 	}
 
 
-	close() { 
-		
-		this.taskbox.classList.add("hidden");		
-		
+	close() {
+
+		this.taskbox.classList.add("hidden");
+
 	}
 
 
