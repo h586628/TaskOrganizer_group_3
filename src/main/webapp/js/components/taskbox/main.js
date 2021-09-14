@@ -34,11 +34,7 @@ export default class extends HTMLElement {
 				<label for="taskTitle">Title: </label>
    				<input id="taskTitle" type="text" placeholder="Title"></input><br><br>
 				<label for="status">Status: </label>
-				<select id="status" >
-					<option value="waiting">WAITING</option>
-					<option value="active">ACTIVE</option>
-					<option value="done">DONE</option>
-				</select><br><br>
+				<select id="status"></select><br><br>
 				<button type="button">Add task</button>
 			</div>
 		`;

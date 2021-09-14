@@ -16,11 +16,9 @@ const controller = {
 		);
 
 		const taskbox = document.querySelector("task-box");
-		
-		taskbox.show();
-		
-		//taskbox.close()
 
+		taskbox.allstatuses = ["WATING", "ACTIVE", "DONE"];
+		taskbox.show();
 
 
 		const task = {
@@ -32,10 +30,6 @@ const controller = {
 		tasklist.showTask(task);
 	},
 
-
-	//	async addTask(task){
-
-	//	},
 
 
 }

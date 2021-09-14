@@ -127,5 +127,19 @@ export default class extends HTMLElement {
 		if (this.taskList.querySelectorAll('table').length == 0) this.noTask();
 		
 	}
+	
+	/**
+	 * @param {Array<Object>} statuses
+	 */
+	set allstatuses(statuses) {
+		const statusDropdown = this.taskList.querySelector("select");
+		statuses.forEach((status, index) => {
+			const statusOption = document.createElement("option");
+			statusOption.value = index;
+			statusOption.textContent = status;
+			statusDropdown.add(statusOption);
+		
+		});
+	}
 }
 
