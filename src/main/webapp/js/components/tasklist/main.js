@@ -99,6 +99,7 @@ export default class extends HTMLElement {
 		this.deleteTaskCallbackId++;
 	}
 
+
 	runDeleteTaskCallback(event) {
 		const button = event.target;
 		const id = button.parentNode.parentNode.getAttribute("taskId")
@@ -118,46 +119,46 @@ export default class extends HTMLElement {
 
 	showTask(task) {
 		if (this.taskList.querySelectorAll('table').length == 0) this.createTasklistTable();
-
-		const row = document.createElement('tr');
-		row.setAttribute("taskId", task.id)
-
-		row.innerHTML = `
-			<td>${task.title}</td>
-			<td>${task.status}</td>
-			<td>
-				<select id="status">
-					<option value="0">&ltModify&gt</option>
-				</select>
-			</td>
-			<td>
-				<button>Remove</button>
-			</td>
-		`;
 		
-		const dropdownSelect = row.querySelector("select");
-		dropdownSelect.addEventListener("change", this.runChangeStatusCallback.bind(this))
+		const row2 = this.taskList.querySelector('tbody').insertRow(0);
+		
+		row2.setAttribute("taskId", task.id); 
+		row2.insertCell(0).textContent = task.title; 
+		row2.insertCell(1).textContent = task.status; 
+		
+		const select = document.createElement('select'); 
+		const modifyOption = document.createElement('option');
+		modifyOption.textContent = "<Modify>";
+		modifyOption.value = 0; 
+		modifyOption.defaultSelected = true; 
+		select.add(modifyOption); 
+		
 
 		this.allstatuses.forEach(status => {
 
 			const statusOption = document.createElement("option");
 			statusOption.value = status;
 			statusOption.textContent = status;
-			dropdownSelect.add(statusOption);
-
+			select.add(statusOption);
 			if (task.status == status) statusOption.disabled = true;
 			else statusOption.disabled = false;
 			
 		});
-
-		dropdownSelect.selectedIndex = 0;
 		
-		const deleteButton = row.querySelector("button");
-		deleteButton.addEventListener("click", this.runDeleteTaskCallback.bind(this));
-
-
-
-		this.taskList.querySelector('tbody').prepend(row);
+		select.addEventListener("change", this.runChangeStatusCallback.bind(this));
+		select.selectedIndex = 0; 
+		
+		const selectCell = row2.insertCell(2);
+		selectCell.appendChild(select); 
+		
+		const button = document.createElement('button');
+		button.textContent = 'Remove' ;
+		button.type = 'button';
+		button.addEventListener("click", this.runDeleteTaskCallback.bind(this));
+		
+		const deleteCell = row2.insertCell(3);
+		deleteCell.appendChild(button); 
+		
 	}
 
 	updateTask(task) {
@@ -170,7 +171,7 @@ export default class extends HTMLElement {
 		const dropdownElement = row.querySelector('select');
 
 		Array.from(dropdownElement.options).forEach((optionElement) => {
-			if (optionElement.value == status.status) optionElement.disabled = true;
+			if (optionElement.value == task.status) optionElement.disabled = true;
 			else optionElement.disabled = false;
 		});
 
