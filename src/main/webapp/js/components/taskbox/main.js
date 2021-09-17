@@ -18,6 +18,8 @@ export default class extends HTMLElement {
 	createModal() {
 		const modal = document.createElement('div');
 		modal.classList.add("hidden");
+		modal.classList.add("modal");
+
 
 		const content = `
   			<div class="modal-content">
@@ -32,6 +34,9 @@ export default class extends HTMLElement {
 		modal.insertAdjacentHTML('beforeend', content);
 		this.shadow.appendChild(modal);
 
+		//window.onclick = modal.style.display = "none";
+
+
 		return modal;
 	}
 
@@ -44,7 +49,7 @@ export default class extends HTMLElement {
 	 */
 	set allstatuses(statuses) {
 		const statusDropdown = this.taskbox.querySelector("select");
-		
+
 		statuses.forEach(status => {
 			const statusOption = document.createElement("option");
 			statusOption.value = status;
@@ -76,16 +81,16 @@ export default class extends HTMLElement {
 
 	newTask() {
 		let task = {}
-		if(!this.taskbox.classList.contains("hidden")){
+		if (!this.taskbox.classList.contains("hidden")) {
 			const select = this.taskbox.querySelector("select");
-			
+
 			task.title = this.taskbox.querySelector("input").value;
 			task.status = select.options[select.selectedIndex].value;
-			
+
 			this.newtaskCallbackList.forEach(callback => {
-			callback(task);
-		});
-			
+				callback(task);
+			});
+
 		}
 	}
 }

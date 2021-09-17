@@ -80,7 +80,8 @@ const controller = {
 				const newtask = await response.json();
 				if (newtask.responseStatus) {
 					this.tasklist.showTask(newtask.task);
-					this.tasklist.close();
+					this.taskbox.close();
+					console.log("halla");
 				} else {
 					console.log("POST request failed.")
 				}
