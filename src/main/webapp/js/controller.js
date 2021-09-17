@@ -1,3 +1,4 @@
+import config from './modules/config.js';
 import TaskList from './components/tasklist/main.js';
 import TaskBox from './components/taskbox/main.js';
 
@@ -8,44 +9,134 @@ const controller = {
 		customElements.define('task-list', TaskList);
 		customElements.define('task-box', TaskBox);
 
-
 		this.tasklist = document.querySelector("task-list");
 		this.taskbox = document.querySelector("task-box");
-		
-		this.tasklist.enableaddtask();
-
 
 		this.tasklist.addtaskCallback(this.taskbox.show.bind(this.taskbox));
+		this.taskbox.newtaskCallback(this.newTask.bind(this));
+		this.tasklist.changestatusCallback(this.changeStatus.bind(this));
+		this.tasklist.deletetaskCallback(this.deleteTask.bind(this));
 
-		this.taskbox.allstatuses = ["WAITING", "ACTIVE", "DONE"];
-		this.tasklist.allstatuses = ["WAITING", "ACTIVE", "DONE"];
-
-
-
-		const task = {
-			"id": 5,
-			"title": "Do DAT152 home work",
-			"status": "ACTIVE"
-		};
-
-		const task2 = {
-			"id": 1,
-			"title": "Grine",
-			"status": "WAITING"
-		};
-
-		const task3 = {
-			"id": 2,
-			"title": "Gå hjem og legge seg",
-			"status": "DONE"
-		};
-
-		this.tasklist.showTask(task);
-		this.tasklist.showTask(task2);
-		this.tasklist.showTask(task3);
+		this.getAllStatuses();
 	},
 
+	async getAllStatuses() {
+		const url = `${config.servicesPath}/allstatuses`
 
+		try {
+			const response = await fetch(url, { method: "GET" })
 
+			try {
+				const statuses = await response.json();
+				if (statuses.responseStatus) {
+					this.tasklist.allstatuses = statuses.allstatuses;
+					this.taskbox.allstatuses = statuses.allstatuses;
+					this.getTasks()
+				} else {
+					console.log("GET request failed. Could not fetch all statuses.")
+				}
+			} catch (error) {
+				console.log(error)
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	},
+
+	async getTasks() {
+		const url = `${config.servicesPath}/tasklist`
+		try {
+			const response = await fetch(url, { method: "GET" })
+			try {
+				const tasks = await response.json();
+				if (tasks.responseStatus) {
+
+					if (tasks.tasks.length == 0) this.tasklist.noTasks();
+					else {
+						tasks.tasks.forEach(task => { this.tasklist.showTask(task) })
+						this.tasklist.enableaddtask(); 
+					}
+				} else {
+					console.log("GET request failed. Could not fetch tasks from server.")
+				}
+			} catch (error) {
+				console.log(error)
+			}
+		} catch (error) {
+			console.log(error)
+		}
+
+	},
+
+	async newTask(task) {
+		const url = `${config.servicesPath}/task`
+
+		try {
+			const response = await fetch(url, {
+				method: "POST",
+				headers: { "Content-Type": "application/json; charset=utf-8" },
+				body: JSON.stringify(task)
+			});
+			try {
+				const newtask = await response.json();
+				if (newtask.responseStatus) {
+					this.tasklist.showTask(newtask.task);
+					this.taskbox.close();
+				} else {
+					console.log("POST request failed.")
+				}
+			} catch (error) {
+				console.log(error)
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	},
+
+	async changeStatus(id, newStatus) {
+		const url = `${config.servicesPath}/task/${id}`
+
+		try {
+			const response = await fetch(url, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json; charset=utf-8" },
+				body: JSON.stringify({ 'status': newStatus })
+			})
+			try {
+				const updatedTask = await response.json()
+				if (updatedTask.responseStatus) {
+					this.tasklist.updateTask(updatedTask);
+
+				} else {
+					console.log("PUT request failed. Could not update status of task on server.")
+				}
+			} catch (error) {
+				console.log(error)
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	},
+
+	async deleteTask(id) {
+		const url = `${config.servicesPath}/task/${id}`
+
+		try {
+			const response = await fetch(url, { method: "DELETE" })
+			try {
+				const deletedTask = await response.json()
+
+				if (deletedTask.responseStatus) {
+					this.tasklist.removeTask(deletedTask.id)
+				} else {
+					console.log("DELETE request failed. Could not delete task from server.")
+				}
+			} catch (error) {
+				console.log(error)
+			}
+		} catch (error) {
+			console.log(error)
+		}
+	},
 }
 controller.run(); 
