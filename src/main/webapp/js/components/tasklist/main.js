@@ -35,7 +35,7 @@ export default class extends HTMLElement {
 		this.shadow.innerHTML = `
 		<div id="message"><p>Waiting for server data</p></div>
 		<div id="newTask"><button type="button" disabled>New task</button></div>
-		<div id="taskList"><p>blabla</p></div>
+		<div id="taskList"></div>
 		`;
 	}
 
@@ -77,21 +77,21 @@ export default class extends HTMLElement {
 	}
 
 	runChangeStatusCallback(event) {
-		
+
 		const select = event.target;
-		const newStatus = select.value; 
+		const newStatus = select.value;
 		const id = select.parentNode.parentNode.getAttribute("taskId");
 		const taskTitle = select.parentNode.parentNode.children[0].textContent;
-		
-		if(newStatus == 0) return;
-		
-		if(window.confirm(`Do you want to change ${taskTitle} to status ${newStatus}?`)){
+
+		if (newStatus == 0) return;
+
+		if (window.confirm(`Do you want to change ${taskTitle} to status ${newStatus}?`)) {
 			this.changeStatusCallbackList.forEach(callback => callback(id, newStatus));
-		}else{
-			select.selectedIndex = 0; 
+		} else {
+			select.selectedIndex = 0;
 		}
-		
-		
+
+
 	}
 
 	deletetaskCallback(callback) {
@@ -104,35 +104,35 @@ export default class extends HTMLElement {
 		const button = event.target;
 		const id = button.parentNode.parentNode.getAttribute("taskId")
 		const taskTitle = button.parentNode.parentNode.children[0].textContent;
-		
-		if(window.confirm(`Do you want to delete the task ${taskTitle}`)){
+
+		if (window.confirm(`Do you want to delete the task ${taskTitle}`)) {
 			this.deleteTaskCallbackList.forEach(callback => callback(id));
-		}else{
+		} else {
 			console.log("Task not deleted")
 		}
 	}
 
 	noTask() {
 		this.taskList.innerHTML = "";
-		this.message.innerHTML = "<p>No tasks were found.</p>"
+		this.displayMessage(); 
 	}
 
 	showTask(task) {
 		if (this.taskList.querySelectorAll('table').length == 0) this.createTasklistTable();
-		
+
 		const row2 = this.taskList.querySelector('tbody').insertRow(0);
-		
-		row2.setAttribute("taskId", task.id); 
-		row2.insertCell(0).textContent = task.title; 
-		row2.insertCell(1).textContent = task.status; 
-		
-		const select = document.createElement('select'); 
+
+		row2.setAttribute("taskId", task.id);
+		row2.insertCell(0).textContent = task.title;
+		row2.insertCell(1).textContent = task.status;
+
+		const select = document.createElement('select');
 		const modifyOption = document.createElement('option');
 		modifyOption.textContent = "<Modify>";
-		modifyOption.value = 0; 
-		modifyOption.defaultSelected = true; 
-		select.add(modifyOption); 
-		
+		modifyOption.value = 0;
+		modifyOption.defaultSelected = true;
+		select.add(modifyOption);
+
 
 		this.allstatuses.forEach(status => {
 
@@ -142,23 +142,25 @@ export default class extends HTMLElement {
 			select.add(statusOption);
 			if (task.status == status) statusOption.disabled = true;
 			else statusOption.disabled = false;
-			
+
 		});
-		
+
 		select.addEventListener("change", this.runChangeStatusCallback.bind(this));
-		select.selectedIndex = 0; 
-		
+		select.selectedIndex = 0;
+
 		const selectCell = row2.insertCell(2);
-		selectCell.appendChild(select); 
-		
+		selectCell.appendChild(select);
+
 		const button = document.createElement('button');
-		button.textContent = 'Remove' ;
+		button.textContent = 'Remove';
 		button.type = 'button';
 		button.addEventListener("click", this.runDeleteTaskCallback.bind(this));
-		
+
 		const deleteCell = row2.insertCell(3);
-		deleteCell.appendChild(button); 
+		deleteCell.appendChild(button);
 		
+		this.displayMessage(); 
+
 	}
 
 	updateTask(task) {
@@ -183,7 +185,24 @@ export default class extends HTMLElement {
 		const row = this.taskList.querySelector(`tr[taskId="${id}"]`);
 		row.remove();
 		if (this.taskList.querySelectorAll('table').length == 0) this.noTask();
+		this.displayMessage(); 
 
+	}
+
+
+	displayMessage() {
+		const numTasks = this.taskList.querySelectorAll('tbody tr').length; 
+		const messageContainer = document.createElement('p'); 
+		this.message.textContent = ""; 
+		let newMessage = ""; 
+		
+		if(numTasks == 0) newMessage = "No tasks were found";
+		 
+		else newMessage = `Found ${numTasks} tasks`; 
+		
+		messageContainer.textContent = newMessage; 
+		this.message.appendChild(messageContainer);
+				
 	}
 
 

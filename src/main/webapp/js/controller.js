@@ -18,9 +18,6 @@ const controller = {
 		this.tasklist.deletetaskCallback(this.deleteTask.bind(this));
 
 		this.getAllStatuses();
-		this.getTasks()
-		this.tasklist.enableaddtask();
-
 	},
 
 	async getAllStatuses() {
@@ -34,6 +31,7 @@ const controller = {
 				if (statuses.responseStatus) {
 					this.tasklist.allstatuses = statuses.allstatuses;
 					this.taskbox.allstatuses = statuses.allstatuses;
+					this.getTasks()
 				} else {
 					console.log("GET request failed. Could not fetch all statuses.")
 				}
@@ -54,7 +52,10 @@ const controller = {
 				if (tasks.responseStatus) {
 
 					if (tasks.tasks.length == 0) this.tasklist.noTasks();
-					else tasks.tasks.forEach(task => { this.tasklist.showTask(task) })
+					else {
+						tasks.tasks.forEach(task => { this.tasklist.showTask(task) })
+						this.tasklist.enableaddtask(); 
+					}
 				} else {
 					console.log("GET request failed. Could not fetch tasks from server.")
 				}
@@ -80,7 +81,7 @@ const controller = {
 				const newtask = await response.json();
 				if (newtask.responseStatus) {
 					this.tasklist.showTask(newtask.task);
-					this.tasklist.close();
+					this.taskbox.close();
 				} else {
 					console.log("POST request failed.")
 				}
